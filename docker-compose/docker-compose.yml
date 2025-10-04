@@ -187,3 +187,6 @@ volumes:
     driver: local
   litellm-db-data:
     driver: local
+configs:
+  litellm-config:
+    file: ./litellm-config.yaml
