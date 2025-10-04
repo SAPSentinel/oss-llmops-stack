@@ -1,4 +1,4 @@
 # OSS LLMOps Stack
 
 > [!NOTE]  
-> Learn more: [oss-llmops-stack.com](https://oss-llmops-stack.com)
+> This is a custom repo. DO NOT COPY.
