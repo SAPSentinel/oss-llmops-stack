@@ -51,7 +51,7 @@ services:
     restart: always
     depends_on: *langfuse-depends-on
     ports:
-      - "3000:3000"
+      - "3002:3000"
     environment:
       <<: *langfuse-worker-env
       NEXTAUTH_URL: http://localhost:3000
@@ -81,7 +81,7 @@ services:
       - langfuse_clickhouse_logs:/var/log/clickhouse-server
     ports:
       - "8123:8123"
-      - "9000:9000"
+      - "9030:9000"
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
       interval: 5s
@@ -100,7 +100,7 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: miniosecret
     ports:
-      - "9090:9000"
+      - "19090:9000"
       - "9091:9001"
     volumes:
       - langfuse_minio_data:/data
@@ -137,7 +137,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     ports:
-      - 5432:5432
+      - 5437:5432
     volumes:
       - langfuse_postgres_data:/var/lib/postgresql/data
 
