@@ -4,7 +4,7 @@ model_list:
   - model_name: "*" # all requests where model not in your config go to this deployment
     litellm_params:
       model: "ollama/nomic-embed-text" # set `openai/` to use the openai route
-      api_base: "http://192.168.1.7:11434"
+      api_base: "http://192.168.1.13:11434"
 
 litellm_settings: # module level litellm settings - https://github.com/BerriAI/litellm/blob/main/litellm/__init__.py
   drop_params: True
@@ -22,3 +22,12 @@ general_settings:
 
   store_model_in_db: true
   store_prompts_in_spend_logs: true
+
+guardrails:
+  - guardrail_name: "guardrails_ai-guard"
+    litellm_params:
+      guardrail: guardrails_ai
+      guard_name: "detect-secrets-guard"            # 👈 Guardrail AI guard name
+      mode: "pre_call"
+      guardrails_ai_api_input_format: "llmOutput"   # 👈 This is the only option that currently works (and it is a default), use it for both pre_call and post_call hooks
+      api_base: http://192.168.1.13:8780   # 👈 Guardrails AI API Base. Defaults to "http://0.0.0.0:8000" os.environ/GUARDRAILS_AI_API_BASE
