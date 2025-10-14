@@ -5,14 +5,10 @@ services:
     image: langfuse/langfuse-worker:3
     restart: always
     depends_on:
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      clickhouse:
-        condition: service_healthy
+      - postgres
+      - minio
+      - redis
+      - clickhouse
     ports:
       - "3030:3030"
     environment: &langfuse-worker-env
@@ -50,14 +46,10 @@ services:
     image: langfuse/langfuse:3
     restart: always
     depends_on:
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      clickhouse:
-        condition: service_healthy
+      - postgres
+      - minio
+      - redis
+      - clickhouse
     ports:
       - "3002:3000"
     environment:
@@ -162,8 +154,7 @@ services:
     env_file:
       - litellm.env
     depends_on:
-      litellm-db:
-        condition: service_healthy
+      - litellm-db
 
   litellm-db:
     image: postgres
