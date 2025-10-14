@@ -5,20 +5,16 @@ services:
     image: langfuse/langfuse-worker:3
     restart: always
     depends_on: &langfuse-depends-on
-      postgres:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      clickhouse:
-        condition: service_healthy
+      - postgres
+      - minio
+      - redis
+      - clickhouse
     ports:
       - "3030:3030"
     environment: &langfuse-worker-env
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
       SALT: "mysalt"
-      ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000" # generate via `openssl rand -hex 32`
+      ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
       TELEMETRY_ENABLED: ${TELEMETRY_ENABLED:-true}
       LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: ${LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES:-true}
       CLICKHOUSE_MIGRATION_URL: ${CLICKHOUSE_MIGRATION_URL:-clickhouse://clickhouse:9000}
@@ -54,15 +50,15 @@ services:
       - "3002:3000"
     environment:
       <<: *langfuse-worker-env
-      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_URL: http://localhost:3002
       NEXTAUTH_SECRET: mysecret
       LANGFUSE_INIT_ORG_ID: "default-org"
       LANGFUSE_INIT_ORG_NAME: "My Organization"
       LANGFUSE_INIT_PROJECT_ID: "default-project"
       LANGFUSE_INIT_PROJECT_NAME: "My Project"
-      LANGFUSE_INIT_PROJECT_PUBLIC_KEY: "pk-lf-ossllmopsstack" # You should generate this
-      LANGFUSE_INIT_PROJECT_SECRET_KEY: "sk-lf-ossllmopsstack" # You should generate this
-      LANGFUSE_INIT_USER_EMAIL: "admin@example.com"
+      LANGFUSE_INIT_PROJECT_PUBLIC_KEY: "pk-lf-ossllmopsstack"
+      LANGFUSE_INIT_PROJECT_SECRET_KEY: "sk-lf-ossllmopsstack"
+      LANGFUSE_INIT_USER_EMAIL: "iworkf0@gmail.com"
       LANGFUSE_INIT_USER_NAME: "Admin User"
       LANGFUSE_INIT_USER_PASSWORD: "your-secure-password"
 
@@ -94,7 +90,6 @@ services:
     restart: always
     container_name: minio
     entrypoint: sh
-    # create the 'langfuse' bucket before starting the service
     command: -c 'mkdir -p /data/langfuse && minio server --address ":9000" --console-address ":9001" /data'
     environment:
       MINIO_ROOT_USER: minio
@@ -148,15 +143,14 @@ services:
     command:
       - "--config=/app/config.yaml"
     ports:
-      - "4000:4000" # Map the container port to the host, change the host port if necessary
+      - "4000:4000"
     environment:
       DATABASE_URL: "postgresql://postgres:postgres@litellm-db:5432/postgres"
-      STORE_MODEL_IN_DB: "True" # allows adding models to proxy via UI
+      STORE_MODEL_IN_DB: "True"
     env_file:
       - litellm.env
     depends_on:
-      litellm-db:
-        condition: service_healthy
+      litellm-db
 
   litellm-db:
     image: postgres
