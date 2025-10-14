@@ -1,7 +1,4 @@
-version: "3.8"
-
 name: oss-llmops-stack
-
 services:
   langfuse-worker:
     image: langfuse/langfuse-worker:3
@@ -152,7 +149,7 @@ services:
     env_file:
       - litellm.env
     depends_on:
-      litellm-db
+      - litellm-db
 
   litellm-db:
     image: postgres
