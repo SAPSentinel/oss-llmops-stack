@@ -9,17 +9,30 @@ model_list:
 litellm_settings: #
   drop_params: True
   success_callback: ["langfuse"]
+  failure_callback: ["langfuse"]
   langfuse_default_tags: ["cache_hit", "cache_key", "proxy_base_url", "user_api_key_alias", "user_api_key_user_id", "user_api_key_user_email", "user_api_key_team_alias", "semantic-similarity", "proxy_base_url"]
-
-# Caching settings
+  set_verbose: true
+  # CRITICAL: These tell LiteLLM to pass metadata to Langfuse
+  langfuse_default_tags: [
+    "cache_hit", 
+    "cache_key", 
+    "proxy_base_url", 
+    "user_api_key_alias", 
+    "user_api_key_user_id", 
+    "user_api_key_user_email", 
+    "user_api_key_team_alias", 
+    "semantic-similarity"
+  ]
+  # Caching settings - FIXED Redis host
   cache: true
   cache_params:
     type: redis
-    host: "http://192.168.1.13"
+    host: "192.168.1.13"  # ✅ REMOVED http://
     port: 6379
     password: "myredissecret"
     namespace: "litellm.caching.caching"
     max_connections: 100
+
 
 general_settings:
   master_key: "sk-1234"
@@ -33,15 +46,9 @@ general_settings:
   store_model_in_db: true
   store_prompts_in_spend_logs: true
 
+# CRITICAL: Enable message logging for callbacks
 callback_settings:
+  langfuse:
+    pass_metadata: true  # ✅ THIS IS KEY - passes session_id to Langfuse
   otel:
     message_logging: true
-
-guardrails:
-  - guardrail_name: "guardrails_ai-guard"
-    litellm_params:
-      guardrail: guardrails_ai
-      guard_name: "detect-secrets-guard"            # 👈 Guardrail AI guard name
-      mode: "pre_call"
-      guardrails_ai_api_input_format: "llmOutput"   # 👈 This is the only option that currently works (and it is a default), use it for both pre_call and post_call hooks
-      api_base: http://192.168.1.13:8780   # 👈 Guardrails AI API Base. Defaults to "http://0.0.0.0:8000" os.environ/GUARDRAILS_AI_API_BASE
