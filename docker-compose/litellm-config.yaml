@@ -11,7 +11,8 @@ litellm_settings: #
   success_callback: ["langfuse"]
   failure_callback: ["langfuse"]
   set_verbose: true
-
+  forward_client_headers_to_llm_api: true  # THIS IS THE TEST SETTING
+    
   # Caching settings - FIXED Redis host
   cache: true
   cache_params:
@@ -25,22 +26,33 @@ litellm_settings: #
 
 general_settings:
   master_key: "sk-1234"
+  add_user_information_to_llm_headers: true  # THIS IS THE TEST SETTING
+  store_model_in_db: true # Data persistence
+  store_prompts_in_spend_logs: true # Data persistence
   
+  # CRITICAL: Force metadata passthrough for Langfuse
+  langfuse_trace_attributes:
+    - "session_id"
+    - "trace_user_id"
+    - "trace_id"
+    - "tags"
+    
   # CRITICAL: Add Langfuse credentials here
   langfuse_public_key: "pk-lf-ossllmopsstack"
   langfuse_secret_key: "sk-lf-ossllmopsstack"
   langfuse_host: "http://192.168.1.13:3002"
-  
+
+  # THIS IS THE CRITICAL SETTING
+  metadata_passthrough: true  
   
   user_header_mappings:
     - header_name: X-OpenWebUI-User-Id
       litellm_user_role: internal_user
     - header_name: X-OpenWebUI-User-Email
-      litellm_user_role: internal_user #changed from customer
-# Data persistence
-  store_model_in_db: true
-  store_prompts_in_spend_logs: true
-
+      litellm_user_role: internal_user
+    - header_name: x-session-id
+      litellm_user_role: internal_user
+      
 # CRITICAL: Enable message logging for callbacks
 callback_settings:
   langfuse:
