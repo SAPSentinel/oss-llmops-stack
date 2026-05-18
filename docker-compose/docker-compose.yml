@@ -176,10 +176,8 @@ services:
 
     env_file:
       - litellm.env
-
     ports:
       - "4000:4000"
-
     depends_on:
       - litellm-db
 
