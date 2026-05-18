@@ -144,7 +144,7 @@ services:
     image: ghcr.io/berriai/litellm:main-stable
 
     command:
-      - "--config=/app/litellm-config.yaml"
+      - "--config=/repo/docker-compose/litellm-config.yaml"
     ports:
       - "4000:4000"
     environment:
