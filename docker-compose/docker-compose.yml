@@ -144,9 +144,9 @@ services:
     image: ghcr.io/berriai/litellm:main-stable
 
     command:
-  - /bin/sh
-  - -c
-  - |
+    - /bin/sh
+    - -c
+    - |
       cat > /tmp/litellm-config.yaml <<'EOF'
       model_list:
         - model_name: "*"
