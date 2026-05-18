@@ -142,9 +142,12 @@ services:
 
   litellm:
     image: ghcr.io/berriai/litellm:main-stable
-  litellm:
-    image: ghcr.io/berriai/litellm:main-stable
+    restart: always
+
     environment:
+      DATABASE_URL: "postgresql://postgres:postgres@litellm-db:5432/postgres"
+      STORE_MODEL_IN_DB: "True"
+
       CONFIG_FILE_CONTENT: |
         model_list:
           - model_name: "*"
@@ -170,13 +173,13 @@ services:
           langfuse_public_key: "pk-lf-ossllmopsstack"
           langfuse_secret_key: "sk-lf-ossllmopsstack"
           langfuse_host: "http://langfuse-web:3000"
-    ports:
-      - "4000:4000"
-    environment:
-      DATABASE_URL: "postgresql://postgres:postgres@litellm-db:5432/postgres"
-      STORE_MODEL_IN_DB: "True"
+
     env_file:
       - litellm.env
+
+    ports:
+      - "4000:4000"
+
     depends_on:
       - litellm-db
 
